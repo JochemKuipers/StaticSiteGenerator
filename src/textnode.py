@@ -10,7 +10,7 @@ class TextType(Enum):
     IMAGES = 6
     
 class TextNode:
-    def __init__(self, text, text_type: TextType, url=None):
+    def __init__(self, text: str, text_type: TextType, url:str=None):
         self.text = text
         self.text_type = text_type
         self.url = url
@@ -26,14 +26,12 @@ class TextNode:
             case TextType.TEXT:
                 return LeafNode(text_node.text)
             case TextType.BOLD:
-                return LeafNode(f"<b>{text_node.text}</b>")
+                return LeafNode(text_node.text, "b")
             case TextType.ITALIC:
-                return LeafNode(f"<i>{text_node.text}</i>")
+                return LeafNode(text_node.text, "i")
             case TextType.CODE:
-                return LeafNode(f"<code>{text_node.text}</code>")
+                return LeafNode(text_node.text, "code")
             case TextType.LINKS:
-                return LeafNode(f'<a href="{text_node.url}">{text_node.text}</a>')
+                return LeafNode(text_node.text, "a", {"href": text_node.url})
             case TextType.IMAGES:
-                return LeafNode(f'<img src="{text_node.url}" alt="{text_node.text}">')
-            case _:
-                raise ValueError("Invalid TextType")
+                return LeafNode(" ", "img", {"src": text_node.url, "alt": text_node.text})

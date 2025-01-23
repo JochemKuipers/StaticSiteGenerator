@@ -3,7 +3,7 @@ class HTMLNode():
         self.tag = tag
         self.value = value
         self.children = children
-        self.props = props
+        self.props = props if props else {}
         
     def to_html(self):
         raise NotImplementedError()
@@ -15,7 +15,7 @@ class HTMLNode():
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
 
 class LeafNode(HTMLNode):
-    def __init__(self, tag, value, props=None):
+    def __init__(self, value:str, tag:str=None, props:dict=None):
         super().__init__(tag, value, None, props)
         
     def to_html(self):
@@ -23,7 +23,11 @@ class LeafNode(HTMLNode):
             raise ValueError("LeafNode must have a value")
         if not self.tag:
             return self.value
-        return f"<{self.tag} {self.props_to_html()}>{self.value}</{self.tag}>"
+        props_string = self.props_to_html()
+        props_html = f" {props_string}" if props_string else ""
+        if self.tag == "img":
+            return f"<{self.tag}{props_html}>"
+        return f"<{self.tag}{props_html}>{self.value}</{self.tag}>"
     
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
